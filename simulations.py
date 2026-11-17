@@ -22,8 +22,7 @@ def simp_det(t, state, args):
     return (M*(b_u*u**2/s + d_u*w**2/(1+w**2))-g_u*u,
             M*a_v/s - g_v*v,
             M*a_w/s-g_w*w)
-
-@jax.jit
+    
 def det_solve(fun, t0, tf, state0, arg, i_species, solver=Tsit5, dt=0.1):
     save = SaveAt(ts=jnp.linspace(t0, tf, int((tf-t0)/dt)+1))
     term = ODETerm(fun)
