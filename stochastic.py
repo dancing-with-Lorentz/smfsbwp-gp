@@ -49,6 +49,6 @@ if __name__ == "__main__":
     plt.legend(loc='upper right', fontsize='large')
     plt.ylabel("CII count")
     plt.xlabel("Time (minutes)")
-    plt.vlines(60.0, 0.0, 65.0)
+    plt.vlines(60.0, 0.0, 65.0, 'red', '--')
     plt.savefig("stoch_M_vary.png", transparent=True)
     plt.show()
