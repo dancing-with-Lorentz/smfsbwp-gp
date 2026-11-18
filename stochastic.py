@@ -47,6 +47,7 @@ if __name__ == "__main__":
         k0, k1 = jax.random.split(k0)
         plot_stoch_traj(k1, M, N_MC, initial, t0, tf, step, 4)
     plt.legend(loc='upper right', fontsize='large')
+    plt.title("Mean Trajectories with Standard Deviations",loc="left")
     plt.ylabel("CII count")
     plt.xlabel("Time (minutes)")
     plt.vlines(60.0, 0.0, 65.0, 'red', '--')
