@@ -23,10 +23,11 @@ def plot_stoch_traj(key, MOI, N, init, t0, tf, step, i_species, dt=0.5, dimers=0
     stoch_t = get_step(t0, tf, dt=dt)
     sims = v_simulate(key, MOI, N, init, t0, tf, dt, step)
     if i_species == None: #Plot proteins
+        labels = ["CI", 'CI2', 'Cro', 'Cro2', 'CII', 'CII2']
         for i in [0+dimers, 2+dimers, 4+dimers]:
             mean_i = jnp.mean(sims[:,:,i], axis=0)
             std_i = jnp.std(sims[:,:,i], axis=0, ddof=1)
-            plt.plot(stoch_t, mean_i)
+            plt.plot(stoch_t, mean_i, label=labels[i])
             plt.fill_between(stoch_t, mean_i-std_i, mean_i+std_i, alpha=0.3)
     else:
         mean_i = jnp.mean(sims[:,:,i_species], axis=0)
