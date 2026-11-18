@@ -14,7 +14,6 @@ def unpack(file_str):
 def get_step(t0, tf, dt=0.5):
     nstep = int((tf - t0)/dt) + 1
     stoch_t = jnp.linspace(t0, tf, nstep)
-    #i60 = jnp.argmin(jnp.abs(stoch_t-60))
     return stoch_t
 
 def plot_stoch_traj(key, MOI, N, init, t0, tf, step, i_species, dt=0.5, dimers=0, style='tableau-colorblind10'):
