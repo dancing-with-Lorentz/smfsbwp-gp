@@ -3,11 +3,9 @@ import jax.numpy as jnp
 from diffrax import diffeqsolve, ODETerm, SaveAt, Tsit5
 import jsmfsb
 
-@jax.jit
 def run_sim(key, MOI, init, t0, tf, stoch_dt, step):
     return jsmfsb.sim_time_series(key, init*MOI, t0, tf, stoch_dt, step)
 
-@jax.jit
 def v_simulate(key, MOI, N, init, t0, tf, stoch_dt, step):
     key, k0 = jax.random.split(key)
     keys = jax.random.split(k0, N)
