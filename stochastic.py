@@ -38,7 +38,7 @@ if __name__ == "__main__":
     import jax
     plt.figure(figsize=(10,5))
     N_MC = 20000
-    MOIs = [1, 2, 4]
+    MOIs = [1, 4]
     t0 = 0
     tf = 100
     k0 = jax.random.key(42)
