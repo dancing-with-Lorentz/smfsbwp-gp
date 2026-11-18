@@ -22,7 +22,7 @@ def plot_stoch_traj(key, MOI, N, init, t0, tf, step, i_species, dt=0.5, dimers=0
     plt.figure(style)
     stoch_t = get_step(t0, tf, dt=dt)
     sims = v_simulate(key, MOI, N, init, t0, tf, dt, step)
-    if i_species == None: #Plot proteins
+    if i_species == None:
         labels = ["CI", 'CI2', 'Cro', 'Cro2', 'CII', 'CII2']
         for i in [0+dimers, 2+dimers, 4+dimers]:
             mean_i = jnp.mean(sims[:,:,i], axis=0)
