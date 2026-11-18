@@ -51,7 +51,7 @@ def conc_dist(key, M, V, N, init, t_conc, step, t0=0.0, dt=0.5, i_mol = 4, showm
     if showmean:
         plt.axvline(mu, color=meancol, linestyle = '--')
 
-if __name__ == "__main__": #KDE plots
+if __name__ == "__main__": #Distribution plots
     import jax
     plt.figure(figsize=(10,5))
     tc = 60
