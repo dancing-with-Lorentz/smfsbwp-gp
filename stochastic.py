@@ -1,7 +1,7 @@
 from simulations import v_simulate
 import matplotlib.pyplot as plt
-import seaborn as sns
 import jax.numpy as jnp
+import jax.scipy.stats as jsps
 import jsmfsb
 
 def unpack(file_str):
@@ -35,41 +35,42 @@ def plot_stoch_traj(key, MOI, N, init, t0, tf, step, i_species, dt=0.5, dimers=0
         plt.plot(stoch_t, mean_i, label=f"M = {MOI}")
         plt.fill_between(stoch_t, mean_i-std_i, mean_i+std_i, alpha=0.3)
 
-def conc_kde(key, M, V, N, init, t0, tf, step, t_conc, dt=0.5, i_mol = 4, showmode=True, modecol='red', vscale=1e-15):
+def conc_dist(key, M, V, N, init, t0, tf, step, t_conc, dt=0.5, i_mol = 4, showmean=True, meancol='red', vscale=1e-15):
     if tf < t_conc:
         raise ValueError("Stop time before analysis time!")
     stoch_t = get_step(t0, tf, dt=dt)
     i_conc = jnp.argmin(abs(stoch_t - t_conc))
     sims = v_simulate(key, M, N, init, t0, tf, dt, step)
-    if showmode:
-        getmode = sns.kdeplot(sims[:,i_conc,i_mol]/(V*vscale), label=f"M = {M}, V={V}")
-        line = getmode.get_lines()[-1]
-        x = line.get_xdata()
-        y = line.get_ydata()
-        plt.axvline(x[jnp.argmax(y)], color=modecol, linestyle = '--')
-    else:
-        sns.kdeplot(sims[:,i_conc,i_mol]/(V*vscale), label=f"M = {M}, V={V}")
+    sim = sims[:,i_conc,i_mol]/(V*vscale)
+    mu = jnp.mean(sim)
+    s = jnp.std(sim, ddof=1)
+    xs = jnp.linspace(-4, 4, 800)*s + mu
+    ps = jsps.norm.pdf(xs, loc=mu, scale=s)
+    plt.plot(xs, ps, label=f"M = {M}, V={V}")
+    if showmean:
+        plt.axvline(mu, color=meancol, linestyle = '--')
 
 if __name__ == "__main__": #KDE plots
     import jax
     plt.figure(figsize=(10,5))
     ct = 60
-    MOI = 1
+    MOIs = [1, 2, 4]
     N_MC = 5000
     t0 = 0
     tf = 100
     k0 = jax.random.key(42)
     models = ["V_1_phage.txt", "V_2_phage.txt"]
-    for i in range(len(models)):
-        k0, k1 = jax.random.split(k0)
-        initial, step = unpack(models[i])
-        conc_kde(k1, MOI*(i+1), i+1, N_MC, initial, t0, tf, step, ct, showmode=False)
-    plt.gca().set_yticks([])
-    plt.legend(loc="upper right", fontsize="large")
-    plt.xlabel("[CII] at t=60")
-    plt.ylabel("Frequency")
-    plt.savefig("concentration_comparison.png", transparent=True)
-    plt.show()
+    for M in MOIs:
+        plt.clf()
+        for i in range(len(models)):
+            k0, k1 = jax.random.split(k0)
+            initial, step = unpack(models[i])
+            conc_dist(k1, M*(i+1), i+1, N_MC, initial, t0, tf, step, ct, showmean=False)
+        plt.gca().set_yticks([])
+        plt.legend(loc="upper right", fontsize="large")
+        plt.xlabel("[CII] at t=60")
+        plt.ylabel("Frequency")
+        plt.savefig(f"concentration_comparison_M{M}.png", transparent=True)
 
 ''' Stochastic Trajectories
 if __name__ == "__main__":
