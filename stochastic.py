@@ -54,6 +54,7 @@ if __name__ == "__main__": #KDE plots
     import jax
     plt.figure(figsize=(10,5))
     ct = 60
+    MOI = 1
     N_MC = 5000
     t0 = 0
     tf = 100
@@ -62,7 +63,7 @@ if __name__ == "__main__": #KDE plots
     for i in range(len(models)):
         k0, k1 = jax.random.split(k0)
         initial, step = unpack(models[i])
-        conc_kde(k1, i+1, i+1, N_MC, initial, t0, tf, step, ct, showmode=False)
+        conc_kde(k1, MOI*(i+1), i+1, N_MC, initial, t0, tf, step, ct, showmode=False)
     plt.gca().set_yticks([])
     plt.legend(loc="upper right", fontsize="large")
     plt.xlabel("[CII] at t=60")
