@@ -26,7 +26,7 @@ def simp_det(t, state, args):
 def det_solve(fun, t0, tf, state0, arg, i_species, solver=Tsit5, dt=0.1):
     save = SaveAt(ts=jnp.linspace(t0, tf, int((tf-t0)/dt)+1))
     term = ODETerm(fun)
-    soln = diffeqsolve(term, solver, t0, tf, dt, state0, arg, saveat=save)
+    soln = diffeqsolve(term, solver(), t0, tf, dt, state0, arg, saveat=save)
     if i_species == None:
         return soln.ts, soln.ys
     else:            
