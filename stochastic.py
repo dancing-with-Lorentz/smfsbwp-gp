@@ -35,9 +35,10 @@ def plot_stoch_traj(key, MOI, N, init, t0, tf, step, i_species, dt=0.5, dimers=0
         plt.plot(stoch_t, mean_i, label=f"M = {MOI}")
         plt.fill_between(stoch_t, mean_i-std_i, mean_i+std_i, alpha=0.3)
 
-def conc_dist(key, M, V, N, init, t0, tf, step, t_conc, dt=0.5, i_mol = 4, showmean=True, meancol='red', vscale=1e-15):
-    if tf < t_conc:
-        raise ValueError("Stop time before analysis time!")
+def conc_dist(key, M, V, N, init, t_conc, step, t0=0.0, dt=0.5, i_mol = 4, showmean=True, meancol='red', vscale=1e-15):
+    if t0 >= t_conc:
+        raise ValueError("Start time after or at analysis time!")
+    tf = jnp.ceil(t_conc) + 1
     stoch_t = get_step(t0, tf, dt=dt)
     i_conc = jnp.argmin(abs(stoch_t - t_conc))
     sims = v_simulate(key, M, N, init, t0, tf, dt, step)
@@ -53,7 +54,7 @@ def conc_dist(key, M, V, N, init, t0, tf, step, t_conc, dt=0.5, i_mol = 4, showm
 if __name__ == "__main__": #KDE plots
     import jax
     plt.figure(figsize=(10,5))
-    ct = 60
+    tc = 60
     MOIs = [1, 2, 4]
     N_MC = 5000
     t0 = 0
@@ -65,7 +66,7 @@ if __name__ == "__main__": #KDE plots
         for i in range(len(models)):
             k0, k1 = jax.random.split(k0)
             initial, step = unpack(models[i])
-            conc_dist(k1, M*(i+1), i+1, N_MC, initial, t0, tf, step, ct, showmean=False)
+            conc_dist(k1, M*(i+1), i+1, N_MC, initial, tc, step, showmean=False)
         plt.gca().set_yticks([])
         plt.legend(loc="upper right", fontsize="large")
         plt.xlabel("[CII] at t=60")
