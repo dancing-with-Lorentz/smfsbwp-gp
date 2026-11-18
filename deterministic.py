@@ -6,7 +6,7 @@ def plot_det_soln(t0, tf, state0, arg, i_species, style='tableau-colorblind10',s
     ts, ys = det_solve(t0, tf, state0, arg, i_species, solver=solver, dt=dt)
     if i_species == None:
         for i in range(len(ys)):
-            plt.plot(ts, ys[i])
+            plt.plot(ts, ys[i], label=["u", "v", "w"][i])
     else:
         plt.plot(ts, ys, label=f"M={arg[-1]}")
 
